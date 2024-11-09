@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "./_components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { usePathname } from "next/navigation";
-import { UpdateCartContext } from "./_context/updateCartContext";
+import { UpdateCartContext } from "./_context/UpdateCartContext";
 import { useState } from "react";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 

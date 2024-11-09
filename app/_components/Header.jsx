@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Link from 'next/link';
 import { CircleUserRound, LayoutGrid, Search, ShoppingBasket } from 'lucide-react';
 import Image from 'next/image';
@@ -23,15 +23,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import GlobalApi from '../_utils/GlobalApi';
 import { useRouter } from 'next/navigation';
-import { UpdateCartContext } from '../_context/updateCartContext';
+import { UpdateCartContext } from '../_context/UpdateCartContext';
 import CartItemList from '@/components/ui/CartItemList';
 import { toast } from 'sonner';
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
-  const user = JSON.parse(sessionStorage.getItem('user'));
-  const jwt = sessionStorage.getItem('jwt');
+  const [user, setUser] = useState(null);
+  const [jwt, setJwt] = useState(null);
   const [totalCartItem, setTotalCartItem] = useState(0);
   const { updateCart } = useContext(UpdateCartContext);
   const [cartItemList, setCartItemList] = useState([]);
@@ -40,8 +40,15 @@ function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in and fetch categories on component mount
-    setIsLogin(!!jwt);
+    // Fetch session data only on client-side
+    if (typeof window !== 'undefined') {
+      const storedUser = JSON.parse(sessionStorage.getItem('user'));
+      const storedJwt = sessionStorage.getItem('jwt');
+      setUser(storedUser);
+      setJwt(storedJwt);
+      setIsLogin(!!storedJwt);
+    }
+    // Fetch category list when the component mounts
     getCategoryList();
   }, []);
 
@@ -183,7 +190,7 @@ function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <Link href={'my-order'}>
-              <DropdownMenuItem>My Order</DropdownMenuItem>
+                <DropdownMenuItem>My Order</DropdownMenuItem>
               </Link>
               <DropdownMenuItem onClick={onSignOut}>Logout</DropdownMenuItem>
             </DropdownMenuContent>

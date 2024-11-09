@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import GlobalApi from '../_utils/GlobalApi';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { UpdateCartContext } from '../_context/updateCartContext';
+import { UpdateCartContext } from '../_context/UpdateCartContext';
 
 function ProducttitemDetail({ product }) {
 
