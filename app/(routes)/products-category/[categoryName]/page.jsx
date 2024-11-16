@@ -1,9 +1,9 @@
-// app/products-category/[categoryName]/page.js
-
-import GlobalApi from '@/app/_utils/GlobalApi'
+import GlobalApi from '@/app/_utils/GlobalApi';
+import React from 'react';
 import TopCategoryList from '../_components/TopCategoryList';
 import ProductList from '@/app/_components/ProductList';
 
+// Main ProductCategory component
 async function ProductCategory({ params }) {
   const productList = await GlobalApi.getProductsByCategory(params.categoryName);
   const categoryList = await GlobalApi.getCategoryList();
@@ -21,13 +21,16 @@ async function ProductCategory({ params }) {
   );
 }
 
-// Correctly add generateStaticParams() to handle the dynamic categories
+// Static Params generation for dynamic routes
 export async function generateStaticParams() {
   const categoryList = await GlobalApi.getCategoryList();
 
-  return categoryList.map((category) => ({
-    categoryName: category.name,  // Ensure you’re using the correct field from the API
-  }));
+  // Generate static paths, ensuring category names are URL-encoded
+  return categoryList.map((category) => {
+    return {
+      categoryName: encodeURIComponent(category.name),  // Ensure special characters are encoded
+    };
+  });
 }
 
 export default ProductCategory;

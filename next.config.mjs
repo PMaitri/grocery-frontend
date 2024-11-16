@@ -1,14 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
-    domains: ['localhost'], // Add your image domains here
-    unoptimized: true, // Disable image optimization for static export
-  },
-  experimental: {
-    appDir: true,
-  },
-  output: 'export', // For static site generation
+      domains: ['localhost']
+  }
 };
 
 export default nextConfig;

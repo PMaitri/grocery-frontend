@@ -1,4 +1,4 @@
-import { userAgent } from "next/server";
+
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({

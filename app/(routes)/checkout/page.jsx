@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import React, { useState, useEffect } from 'react';
 import GlobalApi from '@/app/_utils/GlobalApi';
 import { useRouter } from 'next/navigation';
-import { PayPalButtons } from '@paypal/react-paypal-js';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
@@ -23,6 +22,18 @@ function Checkout() {
   const [useCod, setUseCod] = useState(false); // Checkbox state for COD
 
   const router = useRouter();
+  const RAZORPAY_KEY_ID = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   useEffect(() => {
     if (!jwt) {
@@ -61,6 +72,42 @@ function Checkout() {
     const tax = subtotal * 0.09;
     const delivery = 15;
     return subtotal + tax + delivery;
+  };
+
+  const handleRazorpayPayment = () => {
+    if (typeof window.Razorpay === 'undefined') {
+      toast.error('Razorpay is not loaded. Please try again.');
+      return;
+    }
+
+    const options = {
+      key: RAZORPAY_KEY_ID, // Environment variable for Razorpay key
+      amount: totalAmount * 100, // Amount in paise (INR)
+      currency: 'INR',
+      name: 'Kirana', // Your company name or app name
+      description: 'Test Transaction',
+      handler: function (response) {
+        onApprove({ paymentID: response.razorpay_payment_id });
+      },
+      prefill: {
+        name: username,
+        email: email,
+        contact: phone,
+      },
+      notes: {
+        address: address,
+      },
+      theme: {
+        color: '#3399cc',
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+      console.error('Payment failed:', response.error);
+      toast.error('Payment failed. Please try again.');
+    });
+    rzp.open();
   };
 
   const onApprove = async (data) => {
@@ -117,12 +164,12 @@ function Checkout() {
         <div className='mx-10 border'>
           <h2 className='p-3 bg-gray-200 font-bold text-center'>Total Cart ({totalCartItem})</h2>
           <div className='p-4 flex flex-col gap-4'>
-            <h2 className='font-bold flex justify-between'>Subtotal: <span>${subtotal}</span></h2>
+            <h2 className='font-bold flex justify-between'>Subtotal: <span>₹{subtotal}</span></h2>
             <hr />
-            <h2 className='flex justify-between'>Delivery: <span>$15.00</span></h2>
-            <h2 className='flex justify-between'>Tax (9%): <span>${(subtotal * 0.09).toFixed(2)}</span></h2>
+            <h2 className='flex justify-between'>Delivery: <span>₹15.00</span></h2>
+            <h2 className='flex justify-between'>Tax (9%): <span>₹{(subtotal * 0.09).toFixed(2)}</span></h2>
             <hr />
-            <h2 className='font-bold flex justify-between'>Total: <span>${calculateTotalAmount().toFixed(2)}</span></h2>
+            <h2 className='font-bold flex justify-between'>Total: <span>₹{calculateTotalAmount().toFixed(2)}</span></h2>
 
             {/* Checkbox for COD */}
             <div className='flex items-center gap-2 mt-4'>
@@ -136,37 +183,12 @@ function Checkout() {
               <label htmlFor="cashOnDelivery" className='font-semibold text-slate-600 text-xl'>Cash on Delivery</label>
             </div>
 
-            {/* Keep the "Order Now (COD)" button */}
+            {/* Button for COD */}
             <Button onClick={() => onApprove({})}>Order Now (COD)</Button>
 
-            {/* PayPal button if totalAmount is available */}
+            {/* Razorpay button if totalAmount is available */}
             {totalAmount && !useCod && (
-              <PayPalButtons 
-                onApprove={(data, actions) => {
-                  return actions.order.capture().then(details => {
-                    onApprove(details); 
-                  }).catch(error => {
-                    console.error("Error capturing PayPal order:", error);
-                    toast.error("Failed to complete payment");
-                  });
-                }}
-                style={{ layout: "horizontal" }}
-                createOrder={(data, actions) => {
-                  return actions.order.create({
-                    purchase_units: [
-                      {
-                        amount: {
-                          value: totalAmount.toFixed(2),
-                          currency_code: "USD"
-                        }
-                      }
-                    ]
-                  }).catch(error => {
-                    console.error("Error creating PayPal order:", error);
-                    toast.error("Failed to create PayPal order");
-                  });
-                }}
-              />
+              <Button onClick={handleRazorpayPayment}>Pay with Razorpay</Button>
             )}
           </div>
         </div>
