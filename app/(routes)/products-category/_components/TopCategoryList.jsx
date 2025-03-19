@@ -18,7 +18,8 @@ import React from 'react'
         //  const slug = generateSlug(category.attributes.name); 
 
           return (
-            <Link href={'/products-category/' + category.attributes.name} key={index} 
+            <Link href={`/products-category/${encodeURIComponent(category.attributes.name)}`} key={index}
+
             className="flex flex-col bg-gray-100 gap-2 p-4 rounded-lg group cursor-pointer hover:bg-slate-200 w-[150px] min-w-[100px] h-30">
               <Image 
                 src={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${category?.attributes?.icon?.data?.[0]?.attributes?.url}`}

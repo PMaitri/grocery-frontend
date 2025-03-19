@@ -20,6 +20,7 @@ const Productitem = ({ product }) => {
         height={200}
         alt={product.attributes.name}
         className='h-[200px] w-[200px] object-contain '
+        unoptimized
       />
       <h2 className='font-semibold text-lg'>{product.attributes.name}</h2>      
       <div className='flex gap-3'>

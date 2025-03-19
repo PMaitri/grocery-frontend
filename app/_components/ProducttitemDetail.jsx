@@ -71,6 +71,7 @@ function ProducttitemDetail({ product }) {
         alt='image'
         width={300}
         height={300}
+        unoptimized
         className='bg-slate-100 p-5 h-[320px] w-[300px] object-contain rounded-lg'
       />
       

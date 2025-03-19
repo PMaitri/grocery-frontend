@@ -81,10 +81,10 @@ function Checkout() {
     }
 
     const options = {
-      key: RAZORPAY_KEY_ID, // Environment variable for Razorpay key
-      amount: totalAmount * 100, // Amount in paise (INR)
+      key: RAZORPAY_KEY_ID, 
+      amount: totalAmount * 100, 
       currency: 'INR',
-      name: 'Kirana', // Your company name or app name
+      name: 'Kirana', 
       description: 'Test Transaction',
       handler: function (response) {
         onApprove({ paymentID: response.razorpay_payment_id });

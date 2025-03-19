@@ -1,7 +1,7 @@
+"use client";  // Ensure it's a Client Component
 
-
-
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Slider from "./_components/Slider";
 import GlobalApi from "./_utils/GlobalApi";
 import CategoryList from "./_components/CategoryList";
@@ -9,39 +9,47 @@ import ProductList from "./_components/ProductList";
 import Footer from "./_components/Footer";
 import Features from "./_components/Features";
 
+export default function Home() {
+  const [sliderList, setSliderList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [productList, setProductList] = useState([]);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const sliders = await GlobalApi.getSliders();
+        const categories = await GlobalApi.getCategoryList();
+        const products = await GlobalApi.getAllProducts();
+        setSliderList(sliders);
+        setCategoryList(categories);
+        setProductList(products);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
 
-
-export default async function Home() {  
-
-
-  const sliderList = await GlobalApi.getSliders();
-  const categoryList = await GlobalApi.getCategoryList();
-  const productList = await GlobalApi.getAllProducts();  
+    fetchData();
+  }, []);
 
   return (
-   <div className="p-5 md:p-5 px-25">
-     {/* Sliders */}
-     <Slider sliderList={sliderList} />
+    <div className="p-5 md:p-5 px-25">
+      {/* Sliders */}
+      <Slider sliderList={sliderList} />
 
-        {/*Feactures*/}
-        <Features/>
-     
-     {/* Category List */}
-     <CategoryList categoryList={categoryList} />
+      {/* Features */}
+      <Features />
 
-     {/* Product List */}
-     <ProductList productList={productList} />  
+      {/* Category List */}
+      <CategoryList categoryList={categoryList} />
 
-     {/*Banner*/}
-     <Image src='/banner.png' width={1000} height={300}
-     alt="banner"
-     className="w-full h-[400px] object-contain"/>
+      {/* Product List */}
+      <ProductList productList={productList} />
 
-     {/*Footer*/}
-     <Footer/>
+      {/* Banner */}
+      <Image src="/banner.png" width={1000} height={300} alt="banner" className="w-full h-[400px] object-contain" />
 
-   
-   </div>
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }

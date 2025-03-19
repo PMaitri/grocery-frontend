@@ -17,6 +17,7 @@ function CartItemList({ cartItemList, onDeleteItem }) {
                                 width={70} 
                                 height={70} 
                                 alt={cart.attributes.products.data[0].attributes.name} 
+                                unoptimized
                             />
                             <div className="ml-3">
                                 <h2 className="font-semibold">{cart.attributes.products.data[0].attributes.name}</h2>
@@ -30,7 +31,7 @@ function CartItemList({ cartItemList, onDeleteItem }) {
                     </div>
                 ))}
             </div>
-
+        
            
         </div>
     );

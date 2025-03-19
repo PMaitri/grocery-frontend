@@ -39,6 +39,12 @@ function Header() {
   
   const router = useRouter();
 
+  // useEffect(() => {
+  //   console.log("User Login Status:", isLogin);
+  //   console.log("User Data:", user);
+  //   console.log("JWT Token:", jwt);
+  // }, [isLogin, user, jwt]);
+  
   useEffect(() => {
     // Fetch session data only on client-side
     if (typeof window !== 'undefined') {
@@ -109,7 +115,9 @@ function Header() {
   return (
     <div className='p-5 shadow-sm flex justify-between'>
       <div className='flex items-center gap-10 p-2'>
-        <Image src='/logo1.png' alt='logo1' width={50} height={50} />
+      <Link href="/">
+    <Image src='/logo1.png' alt='logo1' width={50} height={50} style={{ cursor: 'pointer' }} />
+  </Link>
 
         {/* Category Dropdown */}
         <DropdownMenu>

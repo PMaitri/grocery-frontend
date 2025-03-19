@@ -2,7 +2,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:1338/api'
+  baseURL: 'http://192.168.43.163:1338/api'
 });
 
 // Fetch categories
@@ -24,8 +24,20 @@ const getAllProducts = () => axiosClient.get('/products?populate=*').then(resp =
 });
 
 // Fetch products by category
-const getProductsByCategory = (category) => axiosClient.get('/products?filters[categories][name][$in]=' + category + '&populate=*')
-  .then(resp => { return resp.data.data });
+const getProductsByCategory = async (category) => {
+  try {
+    console.log("Fetching category:", category); // ✅ Debugging
+
+    const response = await axiosClient.get(`/products?filters[categories][name][$contains]=${encodeURIComponent(category)}&populate=*`);
+
+    console.log("API Response for Category:", response.data);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching products by category:", error.response?.data || error.message);
+    return []; // Ensure a valid return type
+  }
+};
+
 
 // User registration
 const registerUser = (username, email, password) => axiosClient.post('/auth/local/register', {

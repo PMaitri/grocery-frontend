@@ -13,6 +13,7 @@ function MyOrderItem({ orderItem }) {
           height={80}
           alt="Product Image"
           className='bg-gray-100 p-5 rounded-md border'
+          unoptimized
         />
         <div className='col-span-2'>
             <h2>{orderItem.product.data.attributes.name}</h2>
