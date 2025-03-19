@@ -2,7 +2,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-  baseURL: 'http://192.168.43.163:1338/api'
+  baseURL: 'http://localhost:1338/api'
 });
 
 // Fetch categories
